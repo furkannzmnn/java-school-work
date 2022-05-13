@@ -1,5 +1,6 @@
 package com.company.service;
 
+import com.company.dto.CustomerType;
 import com.company.dto.ProductDto;
 import com.company.dto.request.OrderRequest;
 import com.company.dto.request.ProductRequest;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -19,6 +21,7 @@ public class ProductService {
     private Product product = null;
     private final CategoryService categoryService = new CategoryService();
     private final OrderService orderService = new OrderService();
+
 
 
     public final ProductDto getProduct() {
@@ -52,24 +55,30 @@ public class ProductService {
         String categoryName = request.getCategory();
 
 
-        if (! category.getAttribute().contains(categoryName)) {
+        if (!category.getAttribute().contains(categoryName)) {
             throw new IllegalArgumentException("Category is not exist");
         }
 
-        product = Product.builder()
-                .id(new Random().nextInt(100))
+        product = buildData(request, categoryName);
+
+        CustomerType customerType = request.getCustomerType();
+
+        startOrder(product, request.getCustomer().getId(), customerType);
+
+        return getProduct();
+    }
+
+    private Product buildData(ProductRequest request, String categoryName) {
+        return Product.builder()
+                .id(new Random().nextInt(100000))
                 .category(categoryName)
                 .name(request.getName())
                 .price(request.getPrice())
                 .quantity(request.getQuantity())
                 .build();
-
-        startOrder(product, request.getCustomer().getId());
-
-        return getProduct();
     }
 
-    public void startOrder(Product product, int customerId) {
+    public void startOrder(Product product, int customerId, CustomerType customerType) {
         OrderRequest orderRequest = new OrderRequest(
                 customerId,
                 product.getId(),
@@ -79,6 +88,7 @@ public class ProductService {
                 "ORDER SUCCESS"
         );
         Function<OrderRequest, Integer> order  = orderService.addOrder(orderRequest);
+
         order.apply(orderRequest);
     }
 

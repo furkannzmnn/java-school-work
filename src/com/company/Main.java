@@ -1,15 +1,16 @@
 package com.company;
 
+import com.company.dto.CustomerType;
 import com.company.dto.ProductDto;
 import com.company.dto.request.ProductRequest;
 import com.company.model.Customer;
+import com.company.service.EmailSchedulerService;
 import com.company.service.ProductService;
 
 import java.util.Random;
 
 public class Main {
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Customer customer = new Customer(
                 "John",
                 "Doe",
@@ -28,5 +29,8 @@ public class Main {
         String line  = String.join("\n", productDto.toString().split(","));
 
         System.out.println(line);
+
+
+        EmailSchedulerService.start(productDto, CustomerType.INDIVIDUAL);
     }
 }

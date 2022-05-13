@@ -35,6 +35,30 @@ public class ProductDto {
         return new Builder();
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
     public static final class Builder {
         private String name;
         private double price;
